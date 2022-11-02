@@ -18,6 +18,7 @@ class AAxeThrowProjectCharacter : public ACharacter
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
+
 public:
 	AAxeThrowProjectCharacter();
 
@@ -61,9 +62,5 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
-
-private:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=TEXT("Axe"))
-	UStaticMeshComponent* AxeMesh;
 };
 
