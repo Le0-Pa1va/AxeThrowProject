@@ -26,6 +26,11 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Input)
 	float TurnRateGamepad;
 
+	UPROPERTY(EditDefaultsOnly, Category=Axe)
+	TSubclassOf<AActor>Axe;
+
+	virtual void BeginPlay() override;
+
 protected:
 
 	/** Called for forwards/backward input */

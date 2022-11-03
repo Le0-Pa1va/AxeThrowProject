@@ -53,6 +53,15 @@ AAxeThrowProjectCharacter::AAxeThrowProjectCharacter()
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
+
+//////////////////////////////////////////////////////////////////////////
+// BeginPlay
+void AAxeThrowProjectCharacter::BeginPlay()
+{
+	FTransform AxeOnHandTransform = GetMesh()->GetSocketTransform("hand_r_socket");
+}
+
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
