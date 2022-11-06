@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Axe.h"
 #include "AxeThrowProjectCharacter.generated.h"
 
 UCLASS(config=Game)
@@ -25,11 +26,6 @@ public:
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Input)
 	float TurnRateGamepad;
-
-	UPROPERTY(EditDefaultsOnly, Category=Axe)
-	TSubclassOf<AActor>Axe;
-
-	virtual void BeginPlay() override;
 
 protected:
 
@@ -67,5 +63,21 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	UPROPERTY(EditAnywhere, Category=Axe)
+	TSubclassOf<AAxe> Axe;
+
+	UPROPERTY(VisibleAnywhere, Category=Axe)
+	AAxe* SpawnedAxe;
+
+	FVector AxeOnHandLocation;
+	FRotator AxeOnHandRotation;
+
+	UFUNCTION()
+	void ThrowAxePressed();
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 };
 

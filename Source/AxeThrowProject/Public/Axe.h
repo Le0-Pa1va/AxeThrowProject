@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Axe.generated.h"
 
+class AAxeThrowProjectCharacter;
 UCLASS()
 class AXETHROWPROJECT_API AAxe : public AActor
 {
@@ -23,4 +24,22 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+public:
+	UPROPERTY(EditDefaultsOnly, Category=Mesh)
+	UStaticMeshComponent* AxeMesh;
+
+	UPROPERTY(VisibleAnywhere, Category=MainCharacter)
+	const USkeletalMeshSocket* AxeSocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=MainCharacter)
+	TSubclassOf<AAxeThrowProjectCharacter> MainCharacter;
+
+	UPROPERTY(VisibleAnywhere, Category=MainCharacter)
+	USkeletalMeshComponent* MainCharacterMesh;
+
+	UPROPERTY(EditAnywhere, Category=Movement)
+	float ThrowVelocity = 3000.f;
+
+	UFUNCTION(BlueprintCallable)
+	virtual void ThrowAxe(FVector PlayerForwardVector);
 };

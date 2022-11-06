@@ -1,6 +1,10 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "AxeThrowProjectCharacter.h"
+
+#include <concrt.h>
+
+#include "SAdvancedTransformInputBox.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
@@ -49,18 +53,26 @@ AAxeThrowProjectCharacter::AAxeThrowProjectCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
+	AxeOnHandLocation = GetMesh()->GetSocketLocation("hand_r_socket");
+	AxeOnHandRotation = GetMesh()->GetSocketRotation("hand_r_socket");
+	
+
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
-
-//////////////////////////////////////////////////////////////////////////
-// BeginPlay
 void AAxeThrowProjectCharacter::BeginPlay()
 {
-	FTransform AxeOnHandTransform = GetMesh()->GetSocketTransform("hand_r_socket");
+	Super::BeginPlay();
+	if(Axe)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Entrou no if"));
+		SpawnedAxe = GetWorld()->SpawnActor<AAxe>(Axe, AxeOnHandLocation, AxeOnHandRotation);
+		SpawnedAxe->AttachToComponent(
+			GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, "hand_r_socket"
+			);
+	}
 }
-
 
 //////////////////////////////////////////////////////////////////////////
 // Input
@@ -71,6 +83,7 @@ void AAxeThrowProjectCharacter::SetupPlayerInputComponent(class UInputComponent*
 	check(PlayerInputComponent);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+	PlayerInputComponent->BindAction("Throw", IE_Pressed, this, &AAxeThrowProjectCharacter::ThrowAxePressed);
 
 	PlayerInputComponent->BindAxis("Move Forward / Backward", this, &AAxeThrowProjectCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("Move Right / Left", this, &AAxeThrowProjectCharacter::MoveRight);
@@ -137,4 +150,10 @@ void AAxeThrowProjectCharacter::MoveRight(float Value)
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
 	}
+}
+
+void AAxeThrowProjectCharacter::ThrowAxePressed()
+{
+	FVector CameraForward = FollowCamera->GetForwardVector();
+	SpawnedAxe->ThrowAxe(CameraForward);
 }
