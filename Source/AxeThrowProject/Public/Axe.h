@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/Actor.h"
 #include "GameFramework/MovementComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -38,7 +39,16 @@ public:
 
 	UPROPERTY(EditAnywhere, Category=Movement)
 	float ThrowVelocity = 3000.f;
+	
+	UPROPERTY(EditAnywhere, Category=Movement)
+	FRotator AxeThrowRotation = FRotator(-1000.0f, 0.0f, 0.0f);
+
+	UPROPERTY(EditAnywhere, Category=AxeHead)
+	UCapsuleComponent* AxeHead;
 
 	UFUNCTION(BlueprintCallable)
 	virtual void ThrowAxe(AAxeThrowProjectCharacter* MainCharacter,FVector PlayerForwardVector);
+
+	UFUNCTION()    
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 };

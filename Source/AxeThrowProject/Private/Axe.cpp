@@ -16,6 +16,10 @@ AAxe::AAxe()
 	
 	AxeMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AxeMesh"));
 	RootComponent = AxeMesh;
+
+	AxeHead = CreateDefaultSubobject<UCapsuleComponent>(TEXT("AxeHeadCollision"));
+	AxeHead->SetupAttachment(RootComponent);
+	AxeHead->OnComponentHit.AddDynamic(this, &AAxe::OnHit);
 }
 // Called when the game starts or when spawned
 void AAxe::BeginPlay()
@@ -32,24 +36,29 @@ void AAxe::Tick(float DeltaTime)
 
 void AAxe::ThrowAxe(AAxeThrowProjectCharacter* MainCharacter, FVector PlayerForwardVector)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Called Throw Axe function"));
 	AxeMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Block);
 	UProjectileMovementComponent* ProjectileMovementComponent = NewObject<UProjectileMovementComponent>(this);
-	URotatingMovementComponent* AxeRotaitonMovement = NewObject<URotatingMovementComponent>(this);
-	if(ProjectileMovementComponent && AxeRotaitonMovement)
+	URotatingMovementComponent* AxeRotationMovement = NewObject<URotatingMovementComponent>(this);
+	if(ProjectileMovementComponent && AxeRotationMovement)
 	{
 		ProjectileMovementComponent->InitialSpeed = 1500.0f;
 		ProjectileMovementComponent->MaxSpeed = 3000.0f;
 
 		ProjectileMovementComponent->RegisterComponent();
 		ProjectileMovementComponent->Velocity = PlayerForwardVector * ThrowVelocity;
-		UE_LOG(LogTemp, Warning, TEXT("Velocity: %s"), *ProjectileMovementComponent->Velocity.ToString());
 		
-		AxeRotaitonMovement->RotationRate = FRotator(-1000.0f, 0.0f, 0.0f);
-		AxeRotaitonMovement->RegisterComponent();
-		UE_LOG(LogTemp, Warning, TEXT("PlayerForwardVector: %s"), *PlayerForwardVector.ToString());
+		AxeRotationMovement->RotationRate = AxeThrowRotation;
+		AxeRotationMovement->RegisterComponent();
 	}
 	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 }
 
+//TODO fix collision
+void AAxe::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if(OtherActor != this)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Collided"));
+	}
+}
 

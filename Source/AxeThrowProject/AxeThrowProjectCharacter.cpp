@@ -66,7 +66,6 @@ void AAxeThrowProjectCharacter::BeginPlay()
 	Super::BeginPlay();
 	if(Axe)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Entrou no if"));
 		SpawnedAxe = GetWorld()->SpawnActor<AAxe>(Axe, AxeOnHandLocation, AxeOnHandRotation);
 		SpawnedAxe->AttachToComponent(
 			GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, "hand_r_socket"
@@ -154,7 +153,7 @@ void AAxeThrowProjectCharacter::MoveRight(float Value)
 
 void AAxeThrowProjectCharacter::ThrowAxePressed()
 {
-	SetActorRotation(FollowCamera->GetComponentRotation());
+	//TODO fix character rotation with camera
 	const FVector CameraForward = FollowCamera->GetForwardVector();
 	SpawnedAxe->ThrowAxe(this, CameraForward);
 }
