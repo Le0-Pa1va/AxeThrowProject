@@ -38,17 +38,16 @@ void AAxe::ThrowAxe(AAxeThrowProjectCharacter* MainCharacter, FVector PlayerForw
 	URotatingMovementComponent* AxeRotaitonMovement = NewObject<URotatingMovementComponent>(this);
 	if(ProjectileMovementComponent && AxeRotaitonMovement)
 	{
-		// ProjectileMovementComponent->InitialSpeed = 1500.0f;
-		// ProjectileMovementComponent->MaxSpeed = 3000.0f;
+		ProjectileMovementComponent->InitialSpeed = 1500.0f;
+		ProjectileMovementComponent->MaxSpeed = 3000.0f;
 
-		//TODO fix launch and try to do with physics by using impulse
-		ProjectileMovementComponent->Velocity = PlayerForwardVector * ThrowVelocity;
 		ProjectileMovementComponent->RegisterComponent();
-
+		ProjectileMovementComponent->Velocity = PlayerForwardVector * ThrowVelocity;
+		UE_LOG(LogTemp, Warning, TEXT("Velocity: %s"), *ProjectileMovementComponent->Velocity.ToString());
+		
 		AxeRotaitonMovement->RotationRate = FRotator(-1000.0f, 0.0f, 0.0f);
 		AxeRotaitonMovement->RegisterComponent();
 		UE_LOG(LogTemp, Warning, TEXT("PlayerForwardVector: %s"), *PlayerForwardVector.ToString());
-		UE_LOG(LogTemp, Warning, TEXT("Velocity: %s"), *ProjectileMovementComponent->Velocity.ToString());
 	}
 	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 }

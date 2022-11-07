@@ -154,11 +154,7 @@ void AAxeThrowProjectCharacter::MoveRight(float Value)
 
 void AAxeThrowProjectCharacter::ThrowAxePressed()
 {
-	// APlayerCameraManager* CamManager = GetWorld()->GetFirstPlayerController()->PlayerCameraManager;
-	FVector CameraForward = FollowCamera->GetForwardVector();
-	FVector CameraLocation = FollowCamera->GetComponentLocation();
-	FRotator CameraRotation = FollowCamera->GetComponentRotation();
-	FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(FVector(100.0f, 0.0f, 0.0f));
-	GetActorEyesViewPoint(CameraLocation, CameraRotation);
-	SpawnedAxe->ThrowAxe(this, MuzzleLocation);
+	SetActorRotation(FollowCamera->GetComponentRotation());
+	const FVector CameraForward = FollowCamera->GetForwardVector();
+	SpawnedAxe->ThrowAxe(this, CameraForward);
 }
