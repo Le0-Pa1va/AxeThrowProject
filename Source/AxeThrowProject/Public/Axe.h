@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GameFramework/MovementComponent.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "Axe.generated.h"
 
 class AAxeThrowProjectCharacter;
@@ -31,9 +33,6 @@ public:
 	UPROPERTY(VisibleAnywhere, Category=MainCharacter)
 	const USkeletalMeshSocket* AxeSocket;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=MainCharacter)
-	TSubclassOf<AAxeThrowProjectCharacter> MainCharacter;
-
 	UPROPERTY(VisibleAnywhere, Category=MainCharacter)
 	USkeletalMeshComponent* MainCharacterMesh;
 
@@ -41,5 +40,5 @@ public:
 	float ThrowVelocity = 3000.f;
 
 	UFUNCTION(BlueprintCallable)
-	virtual void ThrowAxe(FVector PlayerForwardVector);
+	virtual void ThrowAxe(AAxeThrowProjectCharacter* MainCharacter,FVector PlayerForwardVector);
 };
