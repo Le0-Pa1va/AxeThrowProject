@@ -16,6 +16,8 @@ AAxe::AAxe()
 	
 	AxeMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AxeMesh"));
 	RootComponent = AxeMesh;
+
+	bWasThrown = false;
 }
 // Called when the game starts or when spawned
 void AAxe::BeginPlay()
@@ -49,6 +51,11 @@ void AAxe::ThrowAxe(AAxeThrowProjectCharacter* MainCharacter, FVector PlayerForw
 	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 }
 
+void AAxe::RecallAxe()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Recall Axe"));
+}
+
 //TODO Collide only with the blade
 void AAxe::OnHit(
 		UPrimitiveComponent* HitComponent,
@@ -62,6 +69,8 @@ void AAxe::OnHit(
 	{
 		ProjectileMovementComponent->DestroyComponent();
 		AxeRotationMovement->DestroyComponent();
+		bWasThrown = true;
 	}
 }
+
 

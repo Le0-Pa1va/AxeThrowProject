@@ -76,6 +76,9 @@ public:
 	UFUNCTION()
 	void ThrowAxePressed();
 
+	UFUNCTION()
+	void RecallAxePressed();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

@@ -49,9 +49,15 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category=Movement)
 	URotatingMovementComponent* AxeRotationMovement;
+
+	UPROPERTY(VisibleAnywhere, Category=Throw)
+	bool bWasThrown;
 	
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 	void ThrowAxe(AAxeThrowProjectCharacter* MainCharacter,FVector PlayerForwardVector);
+
+	UFUNCTION()
+	void RecallAxe();
 
 	UFUNCTION()    
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);

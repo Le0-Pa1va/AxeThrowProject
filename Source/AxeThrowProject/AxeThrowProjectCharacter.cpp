@@ -83,6 +83,7 @@ void AAxeThrowProjectCharacter::SetupPlayerInputComponent(class UInputComponent*
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	PlayerInputComponent->BindAction("Throw", IE_Pressed, this, &AAxeThrowProjectCharacter::ThrowAxePressed);
+	PlayerInputComponent->BindAction("Recall", IE_Pressed, this, &AAxeThrowProjectCharacter::RecallAxePressed);
 
 	PlayerInputComponent->BindAxis("Move Forward / Backward", this, &AAxeThrowProjectCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("Move Right / Left", this, &AAxeThrowProjectCharacter::MoveRight);
@@ -154,6 +155,18 @@ void AAxeThrowProjectCharacter::MoveRight(float Value)
 void AAxeThrowProjectCharacter::ThrowAxePressed()
 {
 	//TODO fix character rotation with camera
-	const FVector CameraForward = FollowCamera->GetForwardVector();
-	SpawnedAxe->ThrowAxe(this, CameraForward);
+	if(SpawnedAxe && SpawnedAxe->bWasThrown == false)
+	{
+		const FVector CameraForward = FollowCamera->GetForwardVector();
+		SpawnedAxe->ThrowAxe(this, CameraForward);	
+	}
 }
+
+void AAxeThrowProjectCharacter::RecallAxePressed()
+{
+	if(SpawnedAxe && SpawnedAxe->bWasThrown == true)
+	{
+		SpawnedAxe->RecallAxe();
+	}
+}
+
