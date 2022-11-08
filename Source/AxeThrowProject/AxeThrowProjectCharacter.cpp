@@ -166,7 +166,7 @@ void AAxeThrowProjectCharacter::RecallAxePressed()
 {
 	if(SpawnedAxe && SpawnedAxe->bWasThrown == true)
 	{
-		SpawnedAxe->RecallAxe();
+		SpawnedAxe->RecallAxe(this);
 	}
 }
 

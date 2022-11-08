@@ -3,7 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/CapsuleComponent.h"
+#include "Components/SplineComponent.h"
+#include "Components/TimelineComponent.h"
 #include "GameFramework/Actor.h"
 #include "GameFramework/MovementComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -52,12 +53,21 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category=Throw)
 	bool bWasThrown;
+
+	UPROPERTY(VisibleAnywhere, Category=Recall)
+	USplineComponent* AxeRecallCurve;
+
+	UPROPERTY(EditAnywhere, Category=Recall)
+	float RecallCurveLevel = -250.0f;
+
+	UPROPERTY(EditAnywhere, Category=Recall)
+	UTimelineComponent* RecallTimeline;
 	
 	UFUNCTION()
 	void ThrowAxe(AAxeThrowProjectCharacter* MainCharacter,FVector PlayerForwardVector);
 
 	UFUNCTION()
-	void RecallAxe();
+	void RecallAxe(AAxeThrowProjectCharacter* Thrower);
 
 	UFUNCTION()    
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
