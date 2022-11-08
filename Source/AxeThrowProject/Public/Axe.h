@@ -7,6 +7,7 @@
 #include "GameFramework/Actor.h"
 #include "GameFramework/MovementComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "GameFramework/RotatingMovementComponent.h"
 #include "Axe.generated.h"
 
 class AAxeThrowProjectCharacter;
@@ -43,11 +44,14 @@ public:
 	UPROPERTY(EditAnywhere, Category=Movement)
 	FRotator AxeThrowRotation = FRotator(-1000.0f, 0.0f, 0.0f);
 
-	UPROPERTY(EditAnywhere, Category=AxeHead)
-	UCapsuleComponent* AxeHead;
+	UPROPERTY(VisibleAnywhere, Category=Movement)
+	UProjectileMovementComponent* ProjectileMovementComponent;
 
+	UPROPERTY(VisibleAnywhere, Category=Movement)
+	URotatingMovementComponent* AxeRotationMovement;
+	
 	UFUNCTION(BlueprintCallable)
-	virtual void ThrowAxe(AAxeThrowProjectCharacter* MainCharacter,FVector PlayerForwardVector);
+	void ThrowAxe(AAxeThrowProjectCharacter* MainCharacter,FVector PlayerForwardVector);
 
 	UFUNCTION()    
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
