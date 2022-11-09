@@ -21,12 +21,16 @@ AAxe::AAxe()
 
 	//TODO Create the recall timeline
 	RecallTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("TimeLineComponent"));
+	// InterpFunction.BindUFunction(this, FName("TimelineFloatReturn"));
+	// TimelineFinished.BindUFunction(this, FName("OnTimelinefinished"));
 }
 // Called when the game starts or when spawned
 void AAxe::BeginPlay()
 {
 	Super::BeginPlay();
 	AxeMesh->OnComponentHit.AddDynamic(this, &AAxe::OnHit);
+
+	RecallTimeline->SetPlayRate(1/TimeToComplete);
 }
 
 // Called every frame
@@ -72,6 +76,13 @@ void AAxe::RecallAxe(AAxeThrowProjectCharacter* Thrower)
 		AxeRecallSplinePoints.Append(SplinePoints, UE_ARRAY_COUNT(SplinePoints));
 		AxeRecallCurve = NewObject<USplineComponent>(this);
 		AxeRecallCurve->SetSplinePoints(AxeRecallSplinePoints, ESplineCoordinateSpace::Local, true);
+		//TODO finish recall
+		if(RecallTimeline)
+		{
+			RecallTimeline->PlayFromStart();
+			UE_LOG(LogTemp, Warning, TEXT("%f"), MoveTrack);
+			// RecallTimeline->SetTimelineFinishedFunc()
+		}
 	}
 }
 

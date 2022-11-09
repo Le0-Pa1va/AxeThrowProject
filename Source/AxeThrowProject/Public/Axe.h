@@ -54,19 +54,25 @@ public:
 	UPROPERTY(VisibleAnywhere, Category=Throw)
 	bool bWasThrown;
 
-	UPROPERTY(VisibleAnywhere, Category=Recall)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=Recall)
 	USplineComponent* AxeRecallCurve;
 
 	UPROPERTY(EditAnywhere, Category=Recall)
 	float RecallCurveLevel = -250.0f;
 
-	UPROPERTY(EditAnywhere, Category=Recall)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Recall)
 	UTimelineComponent* RecallTimeline;
+
+	UPROPERTY(EditAnywhere, Category=Recall)
+	float TimeToComplete = 1;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Recall)
+	float MoveTrack;
 	
 	UFUNCTION()
 	void ThrowAxe(AAxeThrowProjectCharacter* MainCharacter,FVector PlayerForwardVector);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void RecallAxe(AAxeThrowProjectCharacter* Thrower);
 
 	UFUNCTION()    
