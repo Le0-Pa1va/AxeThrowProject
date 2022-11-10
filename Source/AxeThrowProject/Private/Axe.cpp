@@ -18,29 +18,38 @@ AAxe::AAxe()
 	RootComponent = AxeMesh;
 
 	bWasThrown = false;
-
-	//TODO Create the recall timeline
-	RecallTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("TimeLineComponent"));
-	// InterpFunction.BindUFunction(this, FName("TimelineFloatReturn"));
-	// TimelineFinished.BindUFunction(this, FName("OnTimelinefinished"));
+	AxeRecallSpline = CreateDefaultSubobject<USplineComponent>(TEXT("AxeRecallSpline"));
 }
+
+
 // Called when the game starts or when spawned
 void AAxe::BeginPlay()
 {
 	Super::BeginPlay();
 	AxeMesh->OnComponentHit.AddDynamic(this, &AAxe::OnHit);
 
-	RecallTimeline->SetPlayRate(1/TimeToComplete);
+	FOnTimelineFloat TimelineProgress;
+	FOnTimelineEvent TimelineFinished;
+
+	TimelineProgress.BindUFunction(this, FName("AxeTimelineProgress"));
+	TimelineFinished.BindUFunction(this, FName("OnTimelineFinished"));
+
+	RecallTimeline.SetPlayRate(1/TimeToComplete);
+	RecallTimeline.AddInterpFloat(AxeCurveFloat, TimelineProgress);
+	RecallTimeline.SetTimelineFinishedFunc(TimelineFinished);
 }
+
 
 // Called every frame
 void AAxe::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	RecallTimeline.TickTimeline(DeltaTime);
 }
 
-void AAxe::ThrowAxe(AAxeThrowProjectCharacter* MainCharacter, FVector PlayerForwardVector)
+
+void AAxe::ThrowAxe(FVector PlayerForwardVector)
 {
 	AxeMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Block);
 	ProjectileMovementComponent = NewObject<UProjectileMovementComponent>(this);
@@ -58,12 +67,14 @@ void AAxe::ThrowAxe(AAxeThrowProjectCharacter* MainCharacter, FVector PlayerForw
 	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 }
 
-void AAxe::RecallAxe(AAxeThrowProjectCharacter* Thrower)
+
+void AAxe::RecallAxe()
 {
-	if(Thrower != nullptr)
+	ThrowerMesh = MainCharacter->GetMesh();
+	if(ThrowerMesh)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Recall Axe"));
-		FVector SocketLocation = Thrower->GetMesh()->GetSocketLocation("hand_r_socket");
+		UE_LOG(LogTemp, Warning, TEXT("Thrower mesh"));
+		FVector SocketLocation = ThrowerMesh->GetSocketLocation("hand_r_socket");
 		FVector AxeLocation = GetActorLocation();
 		FVector SplineMiddlePoint = (AxeLocation + SocketLocation)/2;
 		FVector AxeCurvePoint = SplineMiddlePoint - FVector(0.f, RecallCurveLevel, 0.0f);
@@ -71,22 +82,15 @@ void AAxe::RecallAxe(AAxeThrowProjectCharacter* Thrower)
 		//Creating a list of the spline points to avoid repeating Add method
 		FVector SplinePoints[] = {AxeLocation, AxeCurvePoint, SocketLocation};
 		TArray<FVector> AxeRecallSplinePoints;
-
-		//Appending spline points to the TArray
+		
 		AxeRecallSplinePoints.Append(SplinePoints, UE_ARRAY_COUNT(SplinePoints));
-		AxeRecallCurve = NewObject<USplineComponent>(this);
-		AxeRecallCurve->SetSplinePoints(AxeRecallSplinePoints, ESplineCoordinateSpace::Local, true);
-		//TODO finish recall
-		if(RecallTimeline)
-		{
-			RecallTimeline->PlayFromStart();
-			UE_LOG(LogTemp, Warning, TEXT("%f"), MoveTrack);
-			// RecallTimeline->SetTimelineFinishedFunc()
-		}
+		AxeRecallSpline->SetSplinePoints(AxeRecallSplinePoints, ESplineCoordinateSpace::Local, true);
+		RecallTimeline.PlayFromStart();
 	}
 }
 
-//TODO Collide only with the blade
+
+//TODO Collide only with the blade (try add a small line trace om the blade)
 void AAxe::OnHit(
 		UPrimitiveComponent* HitComponent,
 		AActor* OtherActor,
@@ -103,4 +107,24 @@ void AAxe::OnHit(
 	}
 }
 
+
+void AAxe::AxeTimelineProgress(float TrackValue)
+{
+	if(AxeRecallSpline)
+	{
+		FVector SplineCurvePoint = AxeRecallSpline->GetLocationAtTime(
+														TrackValue,
+														ESplineCoordinateSpace::Local,
+														false
+														);
+		SetActorLocation(SplineCurvePoint);
+	}
+}
+
+
+void AAxe::OnTimelineFinished()
+{
+	AttachToComponent(ThrowerMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, "hand_r_socket");
+	bWasThrown = false;
+}
 

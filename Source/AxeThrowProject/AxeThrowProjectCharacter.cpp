@@ -70,6 +70,7 @@ void AAxeThrowProjectCharacter::BeginPlay()
 		SpawnedAxe->AttachToComponent(
 			GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, "hand_r_socket"
 			);
+		SpawnedAxe->MainCharacter = this;
 	}
 }
 
@@ -158,7 +159,7 @@ void AAxeThrowProjectCharacter::ThrowAxePressed()
 	if(SpawnedAxe && SpawnedAxe->bWasThrown == false)
 	{
 		const FVector CameraForward = FollowCamera->GetForwardVector();
-		SpawnedAxe->ThrowAxe(this, CameraForward);	
+		SpawnedAxe->ThrowAxe(CameraForward);	
 	}
 }
 
@@ -166,7 +167,7 @@ void AAxeThrowProjectCharacter::RecallAxePressed()
 {
 	if(SpawnedAxe && SpawnedAxe->bWasThrown == true)
 	{
-		SpawnedAxe->RecallAxe(this);
+		SpawnedAxe->RecallAxe();
 	}
 }
 

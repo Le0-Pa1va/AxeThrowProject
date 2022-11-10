@@ -33,12 +33,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category=Mesh)
 	UStaticMeshComponent* AxeMesh;
 
-	UPROPERTY(VisibleAnywhere, Category=MainCharacter)
-	const USkeletalMeshSocket* AxeSocket;
-
-	UPROPERTY(VisibleAnywhere, Category=MainCharacter)
-	USkeletalMeshComponent* MainCharacterMesh;
-
 	UPROPERTY(EditAnywhere, Category=Movement)
 	float ThrowVelocity = 3000.f;
 	
@@ -55,26 +49,38 @@ public:
 	bool bWasThrown;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=Recall)
-	USplineComponent* AxeRecallCurve;
+	USplineComponent* AxeRecallSpline;
 
 	UPROPERTY(EditAnywhere, Category=Recall)
 	float RecallCurveLevel = -250.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Recall)
-	UTimelineComponent* RecallTimeline;
+	UPROPERTY(EditAnywhere, Category=RecallTimeline)
+	FTimeline RecallTimeline;
 
-	UPROPERTY(EditAnywhere, Category=Recall)
+	UPROPERTY(EditAnywhere, Category=RecallTimeline)
 	float TimeToComplete = 1;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Recall)
-	float MoveTrack;
+
+	UPROPERTY(EditAnywhere, Category=RecallTimeline)
+	UCurveFloat* AxeCurveFloat;
+
+	UPROPERTY(EditAnywhere, Category=PlayerCharacter)
+	AAxeThrowProjectCharacter* MainCharacter;
+
+	UPROPERTY(VisibleAnywhere, Category=PlayerCharacter)
+	USkeletalMeshComponent* ThrowerMesh;
 	
 	UFUNCTION()
-	void ThrowAxe(AAxeThrowProjectCharacter* MainCharacter,FVector PlayerForwardVector);
+	void ThrowAxe(FVector PlayerForwardVector);
 
 	UFUNCTION(BlueprintCallable)
-	void RecallAxe(AAxeThrowProjectCharacter* Thrower);
-
-	UFUNCTION()    
+	void RecallAxe();
+	
+	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	UFUNCTION()
+	void AxeTimelineProgress(float TrackValue);
+
+	UFUNCTION()
+	void OnTimelineFinished();
 };
